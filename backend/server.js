@@ -20,6 +20,10 @@ mongoose.connect('mongodb://localhost:27017/test')
 .then(() => console.log('Conexión Exitosa!') )
 .catch((excepcion) => console.log('No ha sido posible conectarse a la DB: ', excepcion));
 
+// Testtear si efectivamente la APP está corriendo en el puerto especificado
+const PORT = process.env.PORT || 3000;
+aplicacion.listen(PORT, () => console.log(`Corriendo en el puerto: ${PORT}`));
+
 const usuario = new mongoose.Schema({
     nombre: String,
     correo: String,
@@ -32,8 +36,8 @@ const Usuario = mongoose.model('Usuario',usuario,'usuarios');
 
 aplicacion.post('/guardarUsuario', async(req,res)=>{
     try{
-        const{nombreIngresado,correoIngresado,contrasenaIngresada,generoIngresado,fechaNacimientoIngresada} = req.body;
-        const nuevoUsuario = new Usuario({nombreIngresado,correoIngresado,contrasenaIngresada,generoIngresado,fechaNacimientoIngresada});
+        const{nombre,correo,contrasena,genero,fechaNacimiento} = req.body;
+        const nuevoUsuario = new Usuario({nombre,correo,contrasena,genero,fechaNacimiento});
 
         await nuevoUsuario.save();
         res.status(200).json({message:'Datos Ingresados Correctamente'});
@@ -42,3 +46,7 @@ aplicacion.post('/guardarUsuario', async(req,res)=>{
         res.status(500).json({message:'No ha sido posible guardar los datos'});
     }
 });
+
+// Si hay un error ERR_CONNECTION_REFUSED, puede ser porque el puerto estaba en uso...
+// Usando el terminal de windows, buscamos el ID de la aplicación: netstat -ano | findstr :3000
+// Teniendo el ID de la aplicación: taskkill /PID id_app /F

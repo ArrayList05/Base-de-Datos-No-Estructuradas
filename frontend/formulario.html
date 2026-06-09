@@ -42,7 +42,7 @@
         </div>
         <br>
 
-        <form>
+        <form id="formularioRegistro">
             <p class="h1">Formulario de Registro</p>
             <hr>
 
@@ -50,12 +50,12 @@
                 <div class="row">
                     <div class="col">
                         <label for="input_nombre" class="form-label">Nombre Usuario:</label>
-                        <input class="form-control" type="text" name="input_nombre" id="input_nombre"
+                        <input class="form-control" type="text" name="nombre" id="input_nombre"
                             placeholder="Ingrese su nombre" onchange="validarElemento(this)">
                     </div>
                     <div class="col">
                         <label for="input_correo" class="form-label">Correo Electrónico:</label>
-                        <input class="form-control" type="email" name="input_correo" id="input_correo"
+                        <input class="form-control" type="email" name="correo" id="input_correo"
                             placeholder="Ingrese su nombre" onchange="validarCampoCorreo(this)">
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                 <div class="row">
                     <div class="col">
                         <label for="input_contrasena" class="form-label">Contraseña:</label>
-                        <input type="password" class="form-control" name="input_contrasena" id="input_contrasena"
+                        <input type="password" class="form-control" name="contrasena" id="input_contrasena"
                             onchange="validarCampoContrasena(this)">
                     </div>
                     <div class="col">
@@ -78,7 +78,7 @@
                 <div class="row">
                     <div class="col">
                         <label class="form-label" for="selectGenero">Género:</label>
-                        <select class="form-select" aria-label="Default select example" id="selectGenero"
+                        <select class="form-select" name="genero" id="selectGenero"
                             onchange="validarElemento(this)">
                             <option selected value="">Seleccione su Género</option>
                             <option value="masc">Masculino</option>

@@ -95,6 +95,28 @@ function validarFormulario() {
     if (formularioValido) {
         campoError.style.display = 'none';
         alert('Formulario válido. Enviando datos...');
+
+        const formulario = document.getElementById('formularioRegistro');
+        const dataForm = new FormData(formulario);
+        const datos = Object.fromEntries(dataForm.entries());
+
+        const enviarFormulario = async () => {
+            try{
+                const respuesta = await fetch('http://localhost:3000/guardarUsuario',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const data = await respuesta.json();
+                console.log('Datos alcenados correctamente: ', data);
+            }catch(error){
+                console.log('Ha ocurrido un error: ', error);
+            }
+        }
+        enviarFormulario();
     } else {
         listaErrores.innerHTML = mensajeError;
         campoError.style.display = 'block';
