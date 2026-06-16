@@ -35,8 +35,10 @@ const usuario = new mongoose.Schema({
 const Usuario = mongoose.model('Usuario', usuario, 'usuarios');
 
 // Método POST para guardar datos de USUARIO
+// Definimos el "ENDPOINT" o ruta final donde se canalizará la REQUEST (solicitud)
 aplicacion.post('/guardarUsuario', async (req, res) => {
     try {
+        //
         const { nombre, correo, contrasena, genero, fechaNacimiento } = req.body;
         const nuevoUsuario = new Usuario({ nombre, correo, contrasena, genero, fechaNacimiento });
 

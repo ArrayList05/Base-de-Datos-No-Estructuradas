@@ -112,6 +112,9 @@ function validarFormulario() {
 
                 const data = await respuesta.json();
                 console.log('Datos alcenados correctamente: ', data);
+                if (respuesta.ok){
+                    window.location.href = './listado.html';
+                }
             }catch(error){
                 console.log('Ha ocurrido un error: ', error);
             }
