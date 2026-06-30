@@ -1,5 +1,6 @@
 $(document).ready(function () {
     cargarInfoPaises();
+    cargarInfoComunas();
 });
 
 function validarFormulario() {
@@ -13,6 +14,8 @@ function validarFormulario() {
     let campoArchivo = $('#inputFoto');
     let campoError = $('#errorFormulario');
     let listaErrores = $('#listaErrores');
+    let selectComuna = $('#selectComuna');
+    let campoCalle = $('#input_calle');
     let formularioValido = true;
 
     campoError.hide();
@@ -53,6 +56,16 @@ function validarFormulario() {
         formularioValido = false;
     }
 
+    if (!validarInput(selectComuna)) {
+        agregarError('<li>El campo COMUNA es requerido.</li>');
+        formularioValido = false;
+    }
+
+    if (!validarInput(campoCalle)) {
+        agregarError('<li>El campo CALLE es requerido.</li>');
+        formularioValido = false;
+    }
+
     if (formularioValido) {
         campoError.hide();
         listaErrores.empty();
@@ -60,6 +73,16 @@ function validarFormulario() {
 
         const formulario = $('#formularioRegistro')[0];
         const dataForm = new FormData(formulario);
+
+        const direccion = {
+            comuna: dataForm.get('comuna'),
+            calle: dataForm.get('calle'),
+            numero: dataForm.get('numero'),
+            departamento: dataForm.get('departamento'),
+            codigoPostal: dataForm.get('codigoPostal')
+        }
+        dataForm.set('direccion', JSON.stringify(direccion));
+
         const datos = Object.fromEntries(dataForm.entries());
 
         const enviarFormulario = async () => {
@@ -171,10 +194,28 @@ async function cargarInfoPaises() {
         console.log(paises);
 
         const select = $('#selectNacionalidad');
-        $.each(paises, function (index,pais) {
+        $.each(paises, function (index, pais) {
             select.append($('<option>', {
                 value: pais.iso2,
                 text: pais.nacionalidad
+            }));
+        });
+    } catch (error) {
+        console.log('Error al obtener los datos: ', error)
+    }
+};
+
+async function cargarInfoComunas() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/obtenerComunas');
+        const comunas = await respuesta.json();
+        console.log(comunas);
+
+        const select = $('#selectComuna');
+        $.each(comunas, function (index, comuna) {
+            select.append($('<option>', {
+                value: comuna.codigo,
+                text: comuna.nombre
             }));
         });
     } catch (error) {

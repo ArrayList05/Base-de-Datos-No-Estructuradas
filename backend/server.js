@@ -21,6 +21,14 @@ mongoose.connect('mongodb://localhost:27017/IEI_N3_C2')
 const PORT = process.env.PORT || 3000;
 aplicacion.listen(PORT, () => console.log(`Corriendo en el puerto: ${PORT}`));
 
+const direccion = new mongoose.Schema({
+    comuna: String,
+    calle: String,
+    numero: String,
+    departamento: String,
+    codigoPostal: String
+});
+
 const usuario = new mongoose.Schema({
     nombre: String,
     correo: String,
@@ -28,7 +36,7 @@ const usuario = new mongoose.Schema({
     genero: String,
     fechaNacimiento: String,
     nacionalidad: String,
-    direccion:[direccion]
+    direccion: [direccion]
 });
 
 const Usuario = mongoose.model('Usuario', usuario, 'usuarios');
@@ -43,21 +51,22 @@ const pais = new mongoose.Schema({
 
 const Pais = mongoose.model('Pais', pais, 'paises');
 
-const direccion = new mongoose.Schema({
-    comuna:String,
-    calle:String,
-    numero:String,
-    departamento:String,
-    codigoPostal:String
+const comuna = new mongoose.Schema({
+    codigo: String,
+    nombre: String,
+    region: String
 });
+
+const Comuna = mongoose.model('Comuna', comuna, 'comunas');
 
 // Método POST para guardar datos de USUARIO
 // Definimos el "ENDPOINT" o ruta final donde se canalizará la REQUEST (solicitud)
 aplicacion.post('/guardarUsuario', async (request, response) => {
     try {
         //
-        const { nombre, correo, contrasena, genero, fechaNacimiento, nacionalidad } = request.body;
-        const nuevoUsuario = new Usuario({ nombre, correo, contrasena, genero, fechaNacimiento, nacionalidad });
+        const { nombre, correo, contrasena, genero, fechaNacimiento, nacionalidad,direccion } = request.body;
+        const objetoDireccion = JSON.parse(direccion);
+        const nuevoUsuario = new Usuario({ nombre, correo, contrasena, genero, fechaNacimiento, nacionalidad, direccion: objetoDireccion });
 
         await nuevoUsuario.save();
         response.status(200).json({ message: 'Datos Ingresados Correctamente' });
@@ -73,11 +82,11 @@ aplicacion.get('/obtenerUsuarios', async (request, response) => {
         // Obtenemos una lista de objetos de tipo Usuario
         // Usamos agregaciones para obtener info desde otras colecciones e incorporarlas a nuestra colección
         const usuarios = await Usuario.aggregate([{
-            $lookup:{
-                from:'paises', // Colección desde la que queremos traer datos
-                localField:'nacionalidad', // Campo de la colección con la info a buscar
-                foreignField:'iso2', // Campo de la colecci´pn referenciada que quiero mostrar
-                as:'gentilicio' // Nuevo nombre del campo con la info
+            $lookup: {
+                from: 'paises', // Colección desde la que queremos traer datos
+                localField: 'nacionalidad', // Campo de la colección con la info a buscar
+                foreignField: 'iso2', // Campo de la colecci´pn referenciada que quiero mostrar
+                as: 'gentilicio' // Nuevo nombre del campo con la info
             }
         }]);
 
@@ -93,6 +102,16 @@ aplicacion.get('/obtenerPaises', async (request, response) => {
     try {
         const paises = await Pais.find();
         response.json(paises);
+    } catch (excepcion) {
+        response.status(500).json({ message: 'No ha sido posible obtener los datos. ', excepcion });
+    }
+});
+
+// Método GET para leer datos de COMUNAS
+aplicacion.get('/obtenerComunas', async (request, response) => {
+    try {
+        const comunas = await Comuna.find();
+        response.json(comunas);
     } catch (excepcion) {
         response.status(500).json({ message: 'No ha sido posible obtener los datos. ', excepcion });
     }
