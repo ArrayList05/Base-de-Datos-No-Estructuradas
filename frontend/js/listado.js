@@ -31,7 +31,7 @@ async function obtenerUsuarios() {
                     }
                 },
                 { data: 'fechaNacimiento' },
-                { data: 'nacionalidad' }
+                { data: 'gentilicio[0].nombre' }
             ]
         });
     } catch (error) {

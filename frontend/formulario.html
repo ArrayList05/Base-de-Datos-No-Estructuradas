@@ -48,6 +48,9 @@
             <hr>
 
             <div class="container">
+                <p class="h3">Datos Personales</p>
+                <br>
+
                 <div class="row">
                     <div class="col">
                         <label for="input_nombre" class="form-label">Nombre Usuario:</label>
@@ -79,15 +82,14 @@
                 <div class="row">
                     <div class="col">
                         <label class="form-label" for="selectGenero">Género:</label>
-                        <select class="form-select" name="genero" id="selectGenero"
-                            onchange="validarInput(this)">
+                        <select class="form-select" name="genero" id="selectGenero" onchange="validarInput(this)">
                             <option selected value="">Seleccione su Género</option>
                             <option value="masc">Masculino</option>
                             <option value="fem">Femenino</option>
                             <option value="otro">Otro</option>
                         </select>
                     </div>
-                    
+
                     <div class="col">
                         <label class="form-label" for="selectNacionalidad">Nacionalidad:</label>
                         <select class="form-select" name="nacionalidad" id="selectNacionalidad"
@@ -112,6 +114,42 @@
                 </div>
                 <br>
                 <hr>
+
+                <p class="h3">Dirección</p>
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label" for="selectComuna">Comuna:</label>
+                        <select class="form-select" name="comuna" id="selectComuna" onchange="validarInput(this)">
+                            <option selected value="">Seleccione su Comuna</option>
+                        </select>
+                    </div>
+
+                    <div class="col">
+                        <label for="input_calle" class="form-label">Calle:</label>
+                        <input type="text" class="form-control" name="calle" id="input_calle">
+                    </div>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="input_numero" class="form-label">Número:</label>
+                        <input type="text" class="form-control" name="numero" id="input_numero">
+                    </div>
+
+                    <div class="col">
+                        <label for="input_departamento" class="form-label">Departamento/Oficina:</label>
+                        <input type="text" class="form-control" name="departamento" id="input_departamento">
+                    </div>
+
+                    <div class="col">
+                        <label for="input_codigoPostal" class="form-label">Código Postal:</label>
+                        <input type="text" class="form-control" name="codigoPostal" id="input_codigoPostal">
+                    </div>
+                </div>
+                <br>
 
                 <div class="row">
                     <div class="col d-flex justify-content-end">

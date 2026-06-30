@@ -27,7 +27,8 @@ const usuario = new mongoose.Schema({
     contrasena: String,
     genero: String,
     fechaNacimiento: String,
-    nacionalidad: String
+    nacionalidad: String,
+    direccion:[direccion]
 });
 
 const Usuario = mongoose.model('Usuario', usuario, 'usuarios');
@@ -41,6 +42,14 @@ const pais = new mongoose.Schema({
 });
 
 const Pais = mongoose.model('Pais', pais, 'paises');
+
+const direccion = new mongoose.Schema({
+    comuna:String,
+    calle:String,
+    numero:String,
+    departamento:String,
+    codigoPostal:String
+});
 
 // Método POST para guardar datos de USUARIO
 // Definimos el "ENDPOINT" o ruta final donde se canalizará la REQUEST (solicitud)
@@ -67,7 +76,7 @@ aplicacion.get('/obtenerUsuarios', async (request, response) => {
             $lookup:{
                 from:'paises', // Colección desde la que queremos traer datos
                 localField:'nacionalidad', // Campo de la colección con la info a buscar
-                foreignField:'nacionalidad', // Campo de la colecci´pn referenciada que quiero mostrar
+                foreignField:'iso2', // Campo de la colecci´pn referenciada que quiero mostrar
                 as:'gentilicio' // Nuevo nombre del campo con la info
             }
         }]);
