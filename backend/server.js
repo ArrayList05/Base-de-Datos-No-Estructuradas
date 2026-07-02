@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/IEI_N3_C2')
     .then(() => console.log('Conexión Exitosa!'))
     .catch((excepcion) => console.log('No ha sido posible conectarse a la DB: ', excepcion));
 
-// Testtear si efectivamente la APP está corriendo en el puerto especificado
+// Testear si efectivamente la APP está corriendo en el puerto especificado
 const PORT = process.env.PORT || 3000;
 aplicacion.listen(PORT, () => console.log(`Corriendo en el puerto: ${PORT}`));
 
