@@ -1,0 +1,101 @@
+// campo especial para guardar el id del usuario en caso de que toque guardar un videojuego y asociarlo a un usuario
+ const videojuego = new mongoose.Schema({
+     nombre: String,
+     genero: String,
+     fechaLanzamiento: String,
+     desarrollador: String,
+    precio: Number
+usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }
+});
+ const Videojuego = mongoose.model('Videojuego', videojuegoSchema);
+
+ // metodo post para guardar
+aplicacion.post('/api/videojuegos', async (req, res) =>{
+    try{
+        const nuevoVid = new Videojuego(req.body);
+        await nuevoVid.save();
+        res.status(201).json({mensaje: "objeto guardado con exito"});
+    } catch (exception) {
+        res.status(500).json({error: exception.messaje});
+    }
+});
+
+// metodo get con la agregacion $lookup
+aplicacion.get('/api/videojuegos-detallados', async (rec, res) =>{
+    try{
+        //usamos aggregate para hacer el join en mongo
+        const resultados= await Videojuego.aggregate([
+            {
+                $lookup: {
+                    from: "usuarios",
+                    localField: "usuarioId",
+                    foreignField: "_id",
+                    as: "datosUsuario"
+                }
+            },
+            {
+                // el lookup devuelve un arreglo. esto lo convierte en un objeto directo para que sea mas facil de leer
+                $unwind: { path:"$datosUsuario", preserveNullAndEmptyArrays: true }
+            }
+        ]);
+
+        res.json(resultado);
+    } catch (exception){
+        res.status(500).json({ error: exception.messaje });
+    }
+});
+
+
+//ESQUEMA COMPLETO DE USUARIO
+
+const usuarioSchema = new mongoose.Schema({
+    nombre: { 
+        type: String, 
+        required: true 
+    },
+    rut: { 
+        type: String, 
+        required: true 
+    },
+    correo: { 
+        type: String, 
+        required: true 
+    },
+    telefono: { 
+        type: String  // No dice obligatorio en la tabla, se deja opcional
+    },
+    fechaNacimiento: { 
+        type: Date, 
+        required: true 
+    },
+    genero: { 
+        type: String, 
+        enum: ['M', 'F', 'O'] // Solo permite estos valores según tu captura
+    },
+    
+    // OBJETO ANIDADO: Almacena la estructura de la dirección directamente aquí
+    direccion: {
+        comuna: { type: String, required: true }, //nombre exacto de la coleccion de usuarios en compass
+        calle: { type: String, required: true },  //el campo en la coleccion de videojuegos
+        numero: { type: String, required: true },  //el campo id en la coleccion de usuarios
+        departamento: { type: String } // Opcional  //el nombre del nuevo campo donde se guardara el resultado
+    },
+    
+    contrasena: { 
+        type: String, 
+        required: true // Se almacenará el hash de bcrypt que viene del controlador
+    },
+    
+    // ASIGNACIONES AUTOMÁTICAS
+    fechaRegistro: { 
+        type: Date, 
+        default: Date.now // Se asigna automáticamente la fecha y hora actual
+    },
+    activo: { 
+        type: Boolean, 
+        default: true // Valor predeterminado: true
+    }
+});
+
+// Crear el Modelo basado en el esquema riguroso
+const Usuario = mongoose.model('usuario', usuarioSchema);
