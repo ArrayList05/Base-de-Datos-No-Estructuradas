@@ -99,3 +99,17 @@ const usuarioSchema = new mongoose.Schema({
 
 // Crear el Modelo basado en el esquema riguroso
 const Usuario = mongoose.model('usuario', usuarioSchema);
+
+
+const eventoSchema = new mongoose.Schema({
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario' }, // Relación 1:N
+    nombre: { type: String, required: true },
+    categoria: { type: String },
+    lugar: { type: String },
+    fecha: { type: String }, // Puedes usar String o Date según pida tu formulario
+    hora: { type: String },
+    costo: { type: Number },
+    organizador: { type: String },
+    descripcion: { type: String },
+    estado: { type: String }
+});

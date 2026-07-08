@@ -22,22 +22,61 @@ mongoose.connect('mongodb://localhost:27017/IEI_N3_C2')
 const PORT = process.env.PORT || 3000;
 aplicacion.listen(PORT, () => console.log(`Corriendo en el puerto: ${PORT}`));
 
+const eventoSchema = new mongoose.Schema({
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario' }, // Relación 1:N
+    nombre: { type: String, required: true },
+    categoria: { type: String },
+    lugar: { type: String },
+    fecha: { type: Date },
+    hora: { type: String },
+    costo: { type: Number },
+    organizador: { type: String },
+    descripcion: { type: String },
+    estado: { type: String }
+});
+
+const Evento = mongoose.model('evento', eventoSchema);
+
+aplicacion.post('/api/eventos', async (req, res) => {
+    try {
+        const nuevoEvento = new Evento(req.body);
+        await nuevoEvento.save();
+        res.status(201).json({ mensaje: "Evento registrado con éxito" });
+    } catch (excepcion) {
+        res.status(500).json({ error: excepcion.message });
+    }
+});
+
+aplicacion.get('/api/eventos-detallados', async (req, res) => {
+    try {
+        const resultado = await Evento.aggregate([
+            {
+                $lookup: {
+                    from: "usuarios",   
+                    localField: "usuario",
+                    foreignField: "_id",
+                    as: "datosUsuario"
+                }
+            },
+            {
+                // Convierte el arreglo resultante del lookup en un objeto directo
+                $unwind: { path: "$datosUsuario", preserveNullAndEmptyArrays: true }
+            }
+        ]);
+        res.json(resultado);
+    } catch (excepcion) {
+        res.status(500).json({ error: excepcion.message });
+    }
+});
+
+
+
 const direccion = new mongoose.Schema({
     comuna: String,
     calle: String,
     numero: String,
     departamento: String,
     codigoPostal: String
-});
-
-const usuario = new mongoose.Schema({
-    nombre: String,
-    correo: String,
-    contrasena: String,
-    genero: String,
-    fechaNacimiento: String,
-    nacionalidad: String,
-    direccion: [direccion]
 });
 
 const Usuario = mongoose.model('Usuario', usuario, 'usuarios');
